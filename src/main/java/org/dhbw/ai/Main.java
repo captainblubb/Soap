@@ -6,9 +6,11 @@ public class Main {
 
         try{
 
-            Receiver receiver = new Receiver();
-            Thread receiverThread = new Thread(receiver);
-            receiverThread.start();
+            for (int i = 0; i < 20; i++) {
+                Receiver receiver = new Receiver();
+                Thread receiverThread = new Thread(receiver);
+                receiverThread.start();
+            }
 
             System.out.println("Starting Sender");
 

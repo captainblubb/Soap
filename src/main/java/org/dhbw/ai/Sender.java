@@ -38,7 +38,7 @@ public class Sender {
         s.joinGroup(group);
 
         //Prepare Data
-        String message = "Hello there!";
+        String message = "192.168.7.1";
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(message);

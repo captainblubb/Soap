@@ -10,11 +10,14 @@ import javax.xml.ws.Endpoint;
 @WebService(endpointInterface = "example.AdditionService.IAddition")
 public class Addition implements IAddition{
 
+    public static int count=0;
 
     @Override
     @WebMethod
     public int addition(int a, int b) {
-       return a+b;
+        count++;
+        System.out.println("count: "+count);
+        return a+b;
     }
 
     public static void startService(){
