@@ -11,15 +11,18 @@ public class BroadcastConsumer implements Runnable, IBroadcastConsumer {
 
     String multiCastAddress;
     int multiCastPort;
+    private volatile boolean stop=false;
 
-    ArrayList<IBroadcastListener> broadcastListeners = new ArrayList<>();
+    volatile ArrayList<IBroadcastListener> broadcastListeners = new ArrayList<>();
 
     public BroadcastConsumer( String multiCastAddress, int multiCastPort){
         this.multiCastAddress = multiCastAddress;
         this.multiCastPort = multiCastPort;
     }
 
-
+    public void stop(){
+        this.stop=true;
+    }
 
     public void run() {
 
@@ -34,7 +37,7 @@ public class BroadcastConsumer implements Runnable, IBroadcastConsumer {
             s.joinGroup(group);
 
             //Receive data
-            while (true) {
+            while (stop==false) {
                 //System.out.println("Wating for datagram to be received...");
 
                 //Create buffer
@@ -73,6 +76,6 @@ public class BroadcastConsumer implements Runnable, IBroadcastConsumer {
 
     @Override
     public void addIBroadcastListener(IBroadcastListener broadcastListener) {
-
+        broadcastListeners.add(broadcastListener);
     }
 }

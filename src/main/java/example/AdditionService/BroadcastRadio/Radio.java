@@ -29,24 +29,24 @@ public class Radio implements Runnable, IRegisterListener {
 
         boolean initalized = false;
 
-        while (initalized!=true) {
+        while (initalized==false) {
 
             try {
                 //Start radioThread and publish local IP
                 String localIp = Inet4Address.getLocalHost().getHostAddress();
-                radioPublish = new BroadcastPublisher(Configuration.Radio_multiCastAddress, Configuration.Radio_multiCastPort,localIp,Configuration.Radio_ContentType);
+                radioPublish = new BroadcastPublisher(Configuration.Radio_multiCastAddress, Configuration.Radio_multiCastPort,localIp,Configuration.Radio_ContentType,Configuration.Radio_Delay_Broadcast);
                 radioThread = new Thread(radioPublish);
                 radioThread.start();
 
                 //Start publish name Services
-                namePublish = new BroadcastPublisher(Configuration.NameService_multiCastAddress, Configuration.NameService_multiCastPort,"",Configuration.NameService_ContentType);
+                namePublish = new BroadcastPublisher(Configuration.NameService_multiCastAddress, Configuration.NameService_multiCastPort,"",Configuration.NameService_ContentType,Configuration.NameService_Delay_Broadcast);
                 nameThread = new Thread(namePublish);
                 nameThread.start();
 
                 //Create SOAP Webservice for Registration of Service
                 RegisterService.startService(this,Configuration.general_https+"0.0.0.0"+Configuration.Radio_Registration_url);
                 initalized = true;
-
+                System.out.println("__________Started Broadcast Channels succesfull___________");
             } catch (Exception exp) {
 
                 System.out.println("Failed to start Radio "+exp);

@@ -8,7 +8,7 @@ import javax.xml.ws.Endpoint;
 import java.util.ArrayList;
 
 
-@WebService(endpointInterface = Configuration.Radio_Registration_EP)
+@WebService(endpointInterface = "example.AdditionService.BroadcastRadio.SOAPRegisterService.IRegisterService")
 public class RegisterService implements IRegisterService,IRegisterProvider {
 
     private ArrayList<IRegisterListener> registerListeners= new ArrayList<>();
@@ -16,7 +16,9 @@ public class RegisterService implements IRegisterService,IRegisterProvider {
     @WebMethod
     @Override
     public void registerService(String serviceTyp, String url) {
+        System.out.println("Service registered"+serviceTyp+":"+url);
         notifyListener(serviceTyp,url);
+
     }
 
     @Override

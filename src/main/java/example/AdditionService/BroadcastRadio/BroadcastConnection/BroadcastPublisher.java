@@ -1,5 +1,7 @@
 package example.AdditionService.BroadcastRadio.BroadcastConnection;
 
+import example.AdditionService.BroadcastRadio.Configuration;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -17,7 +19,13 @@ public class BroadcastPublisher implements Runnable{
     InetAddress group;
     MulticastSocket s;
 
-    public BroadcastPublisher(String multiCastAddress, int multiCastPort, String message, String ContentType) throws IOException {
+    private volatile boolean stop=false;
+
+    public void stop(){
+        this.stop=true;
+    }
+
+    public BroadcastPublisher(String multiCastAddress, int multiCastPort, String message, String ContentType, int DelayInMs) throws IOException {
         this.multiCastAddress = multiCastAddress;
         this.multiCastPort = multiCastPort;
         this.message = message;
@@ -33,7 +41,7 @@ public class BroadcastPublisher implements Runnable{
     @Override
     public void run() {
 
-        while (true) {
+        while (stop==false) {
             try {
                 Thread.sleep(1000);
                 sendMessage();
@@ -50,7 +58,7 @@ public class BroadcastPublisher implements Runnable{
         //Prepare Data
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(ContentType+":"+message);
+        oos.writeObject(ContentType+ Configuration.general_Seperation +message);
         byte[] data = baos.toByteArray();
 
         //Send data
