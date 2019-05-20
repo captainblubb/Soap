@@ -15,9 +15,10 @@ public class BroadcastPublisher implements Runnable{
     String ContentType;
     String multiCastAddress;
     int multiCastPort;
-    volatile String message;
+    volatile ServiceInformation serviceInformation;
     InetAddress group;
     MulticastSocket s;
+    int DelayInMs;
 
     private volatile boolean stop=false;
 
@@ -25,11 +26,12 @@ public class BroadcastPublisher implements Runnable{
         this.stop=true;
     }
 
-    public BroadcastPublisher(String multiCastAddress, int multiCastPort, String message, String ContentType, int DelayInMs) throws IOException {
+    public BroadcastPublisher(String multiCastAddress, int multiCastPort, ServiceInformation serviceInformation, String ContentType, int DelayInMs) throws IOException {
         this.multiCastAddress = multiCastAddress;
         this.multiCastPort = multiCastPort;
-        this.message = message;
+        this.serviceInformation = serviceInformation;
         this.ContentType = ContentType;
+        this.DelayInMs = DelayInMs;
 
         //Create Socket
         System.out.println("Create socket on address " + multiCastAddress + " and port " + multiCastPort + ".");
@@ -43,7 +45,8 @@ public class BroadcastPublisher implements Runnable{
 
         while (stop==false) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(DelayInMs);
+                Thread.sleep(5000);
                 sendMessage();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -56,17 +59,15 @@ public class BroadcastPublisher implements Runnable{
         //String multiCastAddress = "224.0.0.1";
         //final int multiCastPort = 52684;
         //Prepare Data
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(ContentType+ Configuration.general_Seperation +message);
-        byte[] data = baos.toByteArray();
+        byte[] data = ServiceConverter.convertServiceInformationToByte(serviceInformation);
 
+        System.out.println("Send bytes: "+data.length);
         //Send data
         s.send(new DatagramPacket(data, data.length, group, multiCastPort));
     }
 
-    public void setMessage(String message){
-        this.message = message;
+    public void setMessage(ServiceInformation serviceInformation){
+        this.serviceInformation = serviceInformation;
     }
 
 }

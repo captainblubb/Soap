@@ -2,6 +2,7 @@ package example.AdditionService.BroadcastRadio;
 
 import example.AdditionService.BroadcastRadio.BroadcastConnection.BroadcastConsumer;
 import example.AdditionService.BroadcastRadio.BroadcastConnection.IBroadcastListener;
+import example.AdditionService.BroadcastRadio.BroadcastConnection.ServiceInformation;
 import example.AdditionService.BroadcastRadio.SOAPRegisterService.RegisterOnRadio;
 
 import java.net.MalformedURLException;
@@ -68,23 +69,21 @@ public class RadioClient implements IBroadcastListener,Runnable{
     }
 
     @Override
-    public void getNotfied(String message) {
+    public void getNotfied(ServiceInformation serviceInformation) {
 
-        System.out.println("___GET NOTFIED___!!");
-        String[] information = message.split(Configuration.general_Seperation);
 
-        switch (information[0]){
+        switch (serviceInformation.serviceTyp){
 
             case Configuration.Radio_ContentType:
 
-                System.out.println("RADIO IP IS "+message);
+                System.out.println("RADIO IP IS "+serviceInformation.urls.get(0));
                 radioIpknown=true;
-                radioIP = information[1];
+                radioIP = serviceInformation.urls.get(0);
                 break;
 
             case Configuration.NameService_ContentType:
 
-                System.out.println(information[1]);
+                System.out.println(serviceInformation.urls.get(0));
 
             }
 

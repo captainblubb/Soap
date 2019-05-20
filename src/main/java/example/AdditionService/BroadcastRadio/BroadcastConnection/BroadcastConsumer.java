@@ -28,13 +28,15 @@ public class BroadcastConsumer implements Runnable, IBroadcastConsumer {
 
         try {
             //Address
-            final int bufferSize = 1024 * 4; //Maximum size of transfer object
+            final int bufferSize = 64 * 4; //Maximum size of transfer object
 
             //Create Socket
-            System.out.println("Create socket on address " + multiCastAddress + " and port " + multiCastPort + ".");
+            System.out.println("Join Multicastsocket on address " + multiCastAddress + " and port " + multiCastPort + ".");
             InetAddress group = InetAddress.getByName(multiCastAddress);
             MulticastSocket s = new MulticastSocket(multiCastPort);
             s.joinGroup(group);
+
+
 
             //Receive data
             while (stop==false) {
@@ -45,32 +47,32 @@ public class BroadcastConsumer implements Runnable, IBroadcastConsumer {
                 s.receive(new DatagramPacket(buffer, bufferSize, group, multiCastPort));
                 //  System.out.println("Datagram received!");
 
-                //Deserialze object
-                ByteArrayInputStream bais = new ByteArrayInputStream(buffer);
-                ObjectInputStream ois = new ObjectInputStream(bais);
+
                 try {
-                    Object readObject = ois.readObject();
-                    if (readObject instanceof String) {
-                        String message = (String) readObject;
-                        System.out.println("Message is: " + message);
-                        notifyListener(message);
-                    } else {
-                        System.out.println("The received object is not of type String!");
+
+
+                    ServiceInformation serviceInformation = ServiceConverter.getServiceInformation(buffer);
+                    if (serviceInformation!=null){
+                        notifyListener(serviceInformation);
                     }
                 } catch (Exception e) {
-                    System.out.println("No object could be read from the received UDP datagram.");
+                    System.out.println("No object could be read from the received UDP datagram."+e);
                 }
 
             }
+
+            s.leaveGroup(InetAddress.getByName(multiCastAddress));
+            s.close();
+
         }catch (Exception e){
             System.out.println(e);
         }
     }
 
     @Override
-    public void notifyListener(String message) {
+    public void notifyListener(ServiceInformation serviceInformation) {
         for (IBroadcastListener broadcastListener:broadcastListeners) {
-            broadcastListener.getNotfied(message);
+            broadcastListener.getNotfied(serviceInformation);
         }
     }
 

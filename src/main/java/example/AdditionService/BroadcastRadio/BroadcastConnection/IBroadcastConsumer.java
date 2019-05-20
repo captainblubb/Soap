@@ -4,6 +4,6 @@ import example.AdditionService.BroadcastRadio.SOAPRegisterService.IRegisterListe
 
 public interface IBroadcastConsumer {
 
-    public void notifyListener(String message);
+    public void notifyListener(ServiceInformation serviceInformation);
     public void addIBroadcastListener(IBroadcastListener broadcastListener);
 }
