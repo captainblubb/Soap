@@ -12,6 +12,7 @@ import java.net.URL;
 public class Main {
     public static void main(String args[]){
 
+
         URL wsdlUrl = null;
         try {
             wsdlUrl = new URL("http://localhost:9001/HelloWorld?wsdl");
@@ -22,10 +23,17 @@ public class Main {
         QName qname = new QName("http://HelloWorldService.example/", "HelloWorldService");
         Service service = Service.create(wsdlUrl, qname);
         IHelloWorld helloWorldService = service.getPort(IHelloWorld.class);
-        System.out.println(helloWorldService.sayHelloWorldFrom("Fabian"));
+        System.out.println(helloWorldService.sayHelloWorldFrom("Fabian").s);
     //  penAdditionService();
 
     }
+
+
+
+
+
+
+
 
     public static void testServices(){
         Addition.startService();

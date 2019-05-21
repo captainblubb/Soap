@@ -2,6 +2,7 @@ package Main;
 
 import example.AdditionService.IAddition;
 import example.HelloWorldService.IHelloWorld;
+import example.HelloWorldService.TestObject;
 
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
@@ -27,7 +28,8 @@ public class helloCli {
         QName qname = new QName("http://HelloWorldService.example/", "HelloWorldService");
         Service service = Service.create(wsdlUrl, qname);
         IHelloWorld helloWorldService = service.getPort(IHelloWorld.class);
-        System.out.println(helloWorldService.sayHelloWorldFrom("Khadija"));
+        TestObject result =helloWorldService.sayHelloWorldFrom("Khadija");
+        System.out.println(result.s);
 
         URL wsdlUrl2 = new URL("http://localhost:12012/swag/Addition");
         //{http://AdditionService.example/}AdditionService

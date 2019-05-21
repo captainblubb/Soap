@@ -3,7 +3,8 @@ package example.HelloWorldService;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 @WebService
@@ -11,5 +12,9 @@ import javax.jws.soap.SOAPBinding;
 public interface IHelloWorld {
 
     @WebMethod
-    String sayHelloWorldFrom(String from);
+    TestObject sayHelloWorldFrom(String from);
+
+    @WebMethod
+    ArrayList<String> bla();
+
 }

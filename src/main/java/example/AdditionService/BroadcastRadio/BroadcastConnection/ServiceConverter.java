@@ -17,6 +17,8 @@ import java.util.Arrays;
       0-8 identify                 |   0-3 int                                4-7 int              7-length  String
       [10,20,30,40,50,60,70,80]    |  <length of length, checksum, Json>    <checksum>  <Json of ServiceInformation>
 
+    identifier : Um den Anfang der sequenz zu identifizieren
+
     length: länge der gesendeten bytes
 
     checksum -> hashwert berechnet aus STRING -> <Json of ServiceInformation> "Es ist immernoch eine UDP Verbindung :D"
@@ -43,6 +45,30 @@ public class ServiceConverter {
             return convertByteToServiceInformation(protocol);
         }
 
+    }
+
+    public static byte[] convertServiceInformationToByte(ServiceInformation serviceInformation){
+
+        if (serviceInformation != null) {
+
+            Gson g = new Gson();
+            String json = g.toJson(serviceInformation);
+            int hash = calclulateHash(json);
+
+            System.out.println("____SENDHASH HASH"+hash);
+
+            byte[] jsonBytes = json.getBytes();
+            byte[] hashBytes = ByteBuffer.allocate(4).putInt(hash).array();
+
+            int length = jsonBytes.length + hashBytes.length + 4;
+            byte[] lengthByte = ByteBuffer.allocate(4).putInt(length).array();
+
+            byte[] result = Bytes.concat(identifier,lengthByte, hashBytes, jsonBytes);
+
+            return result;
+        }
+
+        return new byte[0];
     }
 
     public static int indexOf(byte[] outerArray, byte[] smallerArray) {
@@ -88,30 +114,6 @@ public class ServiceConverter {
         }
 
         return null;
-    }
-
-    public static byte[] convertServiceInformationToByte(ServiceInformation serviceInformation){
-
-        if (serviceInformation != null) {
-
-            Gson g = new Gson();
-            String json = g.toJson(serviceInformation);
-            int hash = calclulateHash(json);
-
-            System.out.println("____SENDHASH HASH"+hash);
-
-            byte[] jsonBytes = json.getBytes();
-            byte[] hashBytes = ByteBuffer.allocate(4).putInt(hash).array();
-
-            int length = jsonBytes.length + hashBytes.length + 4;
-            byte[] lengthByte = ByteBuffer.allocate(4).putInt(length).array();
-
-            byte[] result = Bytes.concat(identifier,lengthByte, hashBytes, jsonBytes);
-
-            return result;
-        }
-
-        return new byte[0];
     }
 
     public static int calclulateHash(String jsonString){
